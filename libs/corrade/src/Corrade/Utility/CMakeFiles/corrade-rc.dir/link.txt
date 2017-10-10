@@ -1,0 +1,1 @@
+/usr/bin/c++  -O3 -DNDEBUG  -rdynamic CMakeFiles/corrade-rc.dir/rc.cpp.o  -o ../../../../../bin/Release/corrade-rc -Wl,-rpath,/home/ovv/Dropbox/projects/OpenGL/sphere/bin/Release/libs: ../../../../../bin/Release/libs/libCorradeUtility.so.0.2 

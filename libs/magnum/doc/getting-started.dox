@@ -1,0 +1,261 @@
+/*
+    This file is part of Magnum.
+
+    Copyright © 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017
+              Vladimír Vondruš <mosra@centrum.cz>
+
+    Permission is hereby granted, free of charge, to any person obtaining a
+    copy of this software and associated documentation files (the "Software"),
+    to deal in the Software without restriction, including without limitation
+    the rights to use, copy, modify, merge, publish, distribute, sublicense,
+    and/or sell copies of the Software, and to permit persons to whom the
+    Software is furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included
+    in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+    THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+    DEALINGS IN THE SOFTWARE.
+*/
+
+namespace Magnum {
+/** @page getting-started Getting started
+@brief Get started with Magnum in matter of minutes.
+
+@tableofcontents
+
+Setting up a new project can be pretty gruesome and nobody likes repeating the
+same process every time. Magnum provides "bootstrap" project structures for
+many use cases, helping you get up and running in no time.
+
+@section getting-started-bootstrap Download bootstrap project
+
+The [bootstrap repository](https://github.com/mosra/magnum-bootstrap) is
+located on GitHub. The `master` branch contains just an README file and the
+actual bootstrap projects are in various other branches, each covering some
+particular use case. For the first project you need the `base` branch, which
+contains only the essential files. Download the branch [as an archive](https://github.com/mosra/magnum-bootstrap/archive/base.zip)
+and extract it somewhere. Do it rather than cloning the full repository, as
+it's better to init your own repository from scratch with clean history.
+
+If you want to (or have to) use GLUT instead of SDL2, download the `base-glut`
+branch [archive](https://github.com/mosra/magnum-bootstrap/archive/base-glut.zip)
+instead of `base` branch. The code will be slightly different from what is
+presented below, but the changes are only minor (two modified lines) and the
+main principles are the same.
+
+@section getting-started-download Download, build and install Corrade and Magnum
+
+Magnum libraries support both separate compilation/installation and CMake
+subprojects. We'll use the subproject approach now, because adding the
+dependencies means just cloning them into your project tree:
+
+    cd /path/to/the/extracted/bootstrap/project
+    git clone git://github.com/mosra/corrade.git
+    git clone git://github.com/mosra/magnum.git
+
+Then open the `CMakeLists.txt` file in the root of bootstrap project and add
+these two new subdirectories using `add_subdirectory()` so the file looks like
+this:
+
+@code
+cmake_minimum_required(VERSION 2.8.12)
+project(MyApplication)
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/modules/")
+
+add_subdirectory(corrade)
+add_subdirectory(magnum)
+add_subdirectory(src)
+@endcode
+
+If you want to install Corrade and Magnum separately instead of cloning them
+into your project tree, just follow @ref building "the full installation guide".
+Don't forget to enable `WITH_SDL2APPLICATION` (or `WITH_GLUTAPPLICATION`, if
+you are using GLUT) when building Magnum so the bootstrap project can use it
+later.
+
+@section getting-started-review Review project structure
+
+The base project consists of just six files in two subfolders. Magnum uses
+CMake build system, see @ref cmake for more information.
+
+    modules/FindCorrade.cmake
+    modules/FindMagnum.cmake
+    modules/FindSDL2.cmake
+    src/MyApplication.cpp
+    src/CMakeLists.txt
+    CMakeLists.txt
+
+In root there is project-wide `CMakeLists.txt`, which you have seen above. It
+just sets up project name, specifies module directory and delegates everything
+important to `CMakeLists.txt` in `src/` subdirectory.
+
+Directory `modules/` contains CMake modules for finding the needed
+dependencies. Unlike modules for finding e.g. OpenGL, which are part of
+standard CMake installation, these aren't part of it and thus must be
+distributed with the project. These files are just verbatim copied from Magnum
+repository.
+
+@note These modules are just the bare minimum you need for starting. If you
+    plan to use additional functionality not part of the core library or target
+    specific platforms, you may need to copy additional modules. See @ref cmake,
+    @ref cmake-plugins, @ref cmake-integration and @ref cmake-extras for more
+    information.
+
+Directory `src/` contains the actual project. To keep things simple, the
+project consists of just one source file with the most minimal code possible:
+@code
+#include <Magnum/DefaultFramebuffer.h>
+#include <Magnum/Platform/Sdl2Application.h>
+
+using namespace Magnum;
+
+class MyApplication: public Platform::Application {
+    public:
+        explicit MyApplication(const Arguments& arguments);
+
+    private:
+        void drawEvent() override;
+};
+
+MyApplication::MyApplication(const Arguments& arguments): Platform::Application{arguments} {
+    // TODO: Add your initialization code here
+}
+
+void MyApplication::drawEvent() {
+    defaultFramebuffer.clear(FramebufferClear::Color);
+
+    // TODO: Add your drawing code here
+
+    swapBuffers();
+}
+
+MAGNUM_APPLICATION_MAIN(MyApplication)
+@endcode
+
+The application essentially does nothing, just clears screen framebuffer to
+default (dark gray) color and then does buffer swap to actually display it on
+the screen. The `src/CMakeLists.txt` file finds Magnum, creates the executable
+and links it to all needed libraries:
+@code
+find_package(Magnum REQUIRED Sdl2Application)
+
+set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
+
+add_executable(MyApplication MyApplication.cpp)
+target_link_libraries(MyApplication
+    Magnum::Magnum
+    Magnum::Application)
+@endcode
+
+In the following tutorials the code will be explained more thoroughly.
+
+@section getting-started-build Build it and run
+
+In Linux (and other Unix-based OSs) you can build the application along with
+the subprojects using the following three commands: create out-of-source build
+directory, run cmake, enable SDL2 application in the Magnum subproject and then
+build everything. The compiled application binary will then appear in `src/`
+subdirectory of the build dir:
+
+    mkdir -p build && cd build
+    cmake .. -DWITH_SDL2APPLICATION=ON
+    cmake --build .
+    ./src/MyApplication
+
+@note If you installed Corrade and Magnum separately (instead of putting them
+    in the project as subprojects), the `-DWITH_SDL2APPLICATION=ON` is not
+    needed as that was already done when compiling & installing Magnum before.
+
+On Windows you can use either MSVC or MinGW-w64 compiler and prebuilt SDL2
+binaries can be downloaded at https://libsdl.org/download-2.0.php. It's then up
+to you whether you will use command-line, QtCreator or Visual Studio. With
+Visual Studio the most straightforward way to create the project file is via
+the command-line:
+
+    mkdir build && cd build
+    cmake .. -DWITH_SDL2APPLICATION=ON
+
+You can also use CMake GUI. Then open the `MyApplication.sln` project file
+generated by CMake in the build directory.
+
+With QtCreator just open project's root `CMakeLists.txt` file. It then asks you
+where to create build directory, allows you to specify initial CMake parameters
+(e.g. the `-DWITH_SDL2APPLICATION=ON` parameter) and then you can just press *Configure*
+and everything is ready to be built.
+
+If you have SDL2 in a non-standard location and CMake can't find it, you need
+to specify where SDL `include/` and `lib/` directories are through
+`CMAKE_PREFIX_PATH`. So, for example, on Windows, the full CMake invocation
+might look like this:
+
+    cmake .. -DCMAKE_PREFIX_PATH="C:/Users/you/Downloads/SDL2-2.0.4" -DWITH_SDL2APPLICATION=ON
+
+On Windows you may get errors about missing DLLs when running the application.
+The solution is either compiling everything as static (enable `BUILD_STATIC`
+CMake option) or installing the dependencies somewhere. To install them, change
+`CMAKE_INSTALL_PREFIX` to your liking and run the `install` target. Then run
+the application with `bin/` subdirectory of installation prefix as working dir
+or add the `bin/` subdirectory to `PATH`.
+
+@image html getting-started.png
+@image latex getting-started.png
+
+Now you can try to change something in the code. Without going too deep into
+the concepts of graphics programming, we can change clear color to something
+else and also print basic information about the GPU the engine is running on.
+First include the needed headers:
+@code
+#include <Magnum/Context.h>
+#include <Magnum/Renderer.h>
+#include <Magnum/Version.h>
+#include <Magnum/Math/Color.h>
+@endcode
+
+And in the constructor (which is currently empty) change the clear color and
+print something to debug output:
+@code
+using namespace Magnum::Math::Literals;
+
+Renderer::setClearColor(Color3::fromHsv(216.0_degf, 0.85f, 1.0f));
+
+Debug() << "Hello! This application is running on" << Context::current().version()
+        << "using" << Context::current().rendererString();
+@endcode
+
+After rebuilding and starting the application, the clear color changes to
+blueish one and something like this would be printed to the console:
+
+> Hello! This application is running on OpenGL 4.5 using GeForce GT 740M
+
+@image html getting-started-blue.png
+@image latex getting-started-blue.png
+
+@section getting-started-tutorials Follow tutorials and learn the principles
+
+Now that you have your first application up and running, the best way to
+continue is to render your first triangle in @ref example-index "step-by-step tutorial".
+Then you can dig deeper and try other examples, read about
+@ref features "fundamental principles" in the documentation and start
+experimenting on your own!
+
+@section getting-started-more Additional information
+
+-   @subpage building
+-   @subpage building-plugins
+-   @subpage building-integration
+-   @subpage building-examples
+-   @subpage building-extras
+-   @subpage cmake
+-   @subpage cmake-plugins
+-   @subpage cmake-integration
+-   @subpage cmake-extras
+
+*/
+}

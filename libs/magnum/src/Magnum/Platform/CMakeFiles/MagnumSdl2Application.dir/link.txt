@@ -1,0 +1,2 @@
+/usr/bin/ar qc libMagnumSdl2Application.a  CMakeFiles/MagnumSdl2Application.dir/Sdl2Application.cpp.o CMakeFiles/MagnumEglContextObjects.dir/Implementation/OpenGLFunctionLoader.cpp.o CMakeFiles/MagnumEglContextObjects.dir/__/__/MagnumExternal/OpenGL/GLES2/flextGLPlatform.cpp.o
+/usr/bin/ranlib libMagnumSdl2Application.a
