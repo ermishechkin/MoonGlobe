@@ -2,3 +2,6 @@
 cmake*
 build
 bin
+*.gch
+*.save
+resources/*/

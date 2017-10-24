@@ -60,7 +60,8 @@ set(WITH_PNGIMPORTER     ON)
 # set target mobile version OpenGL
 set(TARGET_GLES ON)
 
-#set(BUILD_STATIC ON)
+set(BUILD_STATIC OFF)
+set(BUILD_PLUGINS_STATIC OFF)
 add_subdirectory(libs/corrade)
 add_subdirectory(libs/magnum)
 add_subdirectory(libs/magnum-plugins)
@@ -70,6 +71,7 @@ find_package(Magnum REQUIRED
         MeshTools
         Shaders
         Sdl2Application)
+
 
 #wtf?
 set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
@@ -82,7 +84,11 @@ set(LIBS ${LIBS}
         Magnum::Primitives
         Magnum::Shaders
         Magnum::MeshTools
-        Magnum::Magnum)
+)
+
+# find_package(MagnumPlugins REQUIRED JpegImporter)
+
+# set(LIBS ${LIBS} MagnumPlugins::JpegImporter)
 
 #----------------------- apply configurations files ------------------------
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/configure.h.cmake
@@ -90,17 +96,24 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/configure.h.cmake
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/src)
 
 #----------------------- add resources ------------------------
-corrade_add_resource(RESOURCES resources/resources.conf)
+corrade_add_resource(RES_LEVEL1 resources/level1.conf)
+corrade_add_resource(RES_LEVEL2 resources/level2.conf)
+
+set(RESOURCES ${RES_LEVEL1} ${RES_LEVEL2})
 
 #----------------------- sources ------------------------
 set(SOURCES
-        src/main.cpp
-        src/moonglobe.cpp)
+    src/main.cpp
+    src/Fragment/Fragment.cpp
+    src/MoonGlobe/MoonGlobe.cpp
+    src/Utils/MeshGenerators.cpp
+    src/MoonGlobeApplication.cpp
+    src/ResourceManager/ResourceManager.cpp
+)
 
 #----------------------- headers ---------------------------
-include_directories(libs/magnum)
+include_directories(libs/magnum/src/)
 include_directories(src)
-
 
 #----------------------- add target ------------------------
 add_executable(${PROJECT_NAME} ${SOURCES} ${RESOURCES})
