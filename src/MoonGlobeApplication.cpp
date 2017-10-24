@@ -5,6 +5,7 @@ using namespace Magnum;
 MoonGlobeApplication::MoonGlobeApplication(const Arguments &arguments)
     : Platform::Application{arguments, Configuration{}.setTitle("sphere")}
     , shader{Shaders::Phong::Flag::DiffuseTexture}
+    , camera(0, 0, -10)
 {
     //enable depthtest and faceculling
     Renderer::enable(Renderer::Feature::DepthTest);
@@ -20,7 +21,7 @@ void MoonGlobeApplication::initProjectionMatrix()
     projection = Matrix4::perspectiveProjection(
         35.0_degf,
         Vector2{defaultFramebuffer.viewport().size()}.aspectRatio(), 0.01f, 100.0f)
-        * Matrix4::translation(Vector3::zAxis(-10.0f));
+        * Matrix4::translation(Vector3::zAxis(camera.z));
 }
 
 void MoonGlobeApplication::setShaderUniforms()
@@ -41,7 +42,7 @@ void MoonGlobeApplication::drawEvent()
 
     setShaderUniforms();
     // shader.setDiffuseColor(Color4::fromHSV(216.0_degf, 0.85f, 1.0f));
-    moon_globe.draw(shader);
+    moon_globe.draw(shader, camera);
 
     swapBuffers();
 }

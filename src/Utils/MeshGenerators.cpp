@@ -1,8 +1,9 @@
 #include "MeshGenerators.h"
 
-void print_coord(Coords& coords)
+void print_coord(Coords& c)
 {
-    std::cout << coords.theta << " " << coords.phi << "\n";
+    std:: cout << c.x << " " << c.y << " " << c.z << "\n";
+    // std::cout << coords.theta << " " << coords.phi << "\n";
 }
 
 /*
@@ -77,8 +78,8 @@ Magnum::Vector2 compute_texture_coords(const Coords& point,   const Coords& left
     // в исходниках картинки есть рамка 14х14 пикселей вокруг нужной части
     // сама картинка 1024х1024
 
-    x = x * (1024.0 - 28.0) / 1024.0;
     y = y * (1024.0 - 28.0) / 1024.0;
+    x = x * (1024.0 - 28.0) / 1024.0;
     x += 14.0 / 1024.0;
     y += 14.0 / 1024.0;
 

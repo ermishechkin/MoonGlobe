@@ -19,6 +19,7 @@
 #include <Magnum/PixelFormat.h>
 
 #include "MoonGlobe/MoonGlobe.h"
+#include "Camera/Camera.h"
 
 namespace Magnum {
 
@@ -39,6 +40,7 @@ class MoonGlobeApplication : public Platform::Application {
 
     MoonGlobe moon_globe;
     Shaders::Phong shader;
+    Camera camera;
 
     Matrix4 transformation, projection;
     Vector2i previousMousePosition;

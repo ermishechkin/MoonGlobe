@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <memory>
-// #include <unordered_set>
+#include <unordered_map>
 #include "Fragment/Fragment.h"
 
 typedef size_t ZoomLevel;
@@ -13,15 +13,18 @@ class MoonGlobe
 public:
     MoonGlobe();
 
-    void draw(MyShader& shader);
+    void draw(MyShader& shader, const Camera& camera);
     // void set_scale();
 
 private:
     void refreshFragments();
     void generateFragments();
+    std::string get_texture_id(ZoomLevel level, size_t row, size_t column);
 
-    int current_rows;
-    int current_columns;
+    size_t current_rows;
+    size_t current_columns;
+    std::unordered_map<int, std::pair<int, int>> row_and_columns;
+
     ZoomLevel zoom_level;
     std::vector<std::shared_ptr<Fragment>> fragments;
 

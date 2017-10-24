@@ -98,8 +98,9 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}/src)
 #----------------------- add resources ------------------------
 corrade_add_resource(RES_LEVEL1 resources/level1.conf)
 corrade_add_resource(RES_LEVEL2 resources/level2.conf)
+corrade_add_resource(RES_LEVEL3 resources/level3.conf)
 
-set(RESOURCES ${RES_LEVEL1} ${RES_LEVEL2})
+set(RESOURCES ${RES_LEVEL1} ${RES_LEVEL2} ${RES_LEVEL3})
 
 #----------------------- sources ------------------------
 set(SOURCES
@@ -109,6 +110,7 @@ set(SOURCES
     src/Utils/MeshGenerators.cpp
     src/MoonGlobeApplication.cpp
     src/ResourceManager/ResourceManager.cpp
+    src/Camera/Camera.cpp
 )
 
 #----------------------- headers ---------------------------

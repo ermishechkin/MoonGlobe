@@ -1,14 +1,11 @@
 #include "MoonGlobe/MoonGlobe.h"
 
-const std::pair<int, int> row_and_columns[] = {
-    {2, 4}, // 2 линии по 4 фотки
-    {5, 10} // 5 линий по 10 фоток
-};
-
 
 MoonGlobe::MoonGlobe()
-    : zoom_level(1)
+    : zoom_level(2)
 {
+    row_and_columns.insert(std::make_pair(1, std::make_pair(2,  4)));
+    row_and_columns.insert(std::make_pair(2, std::make_pair(5, 10)));
     refreshFragments();
 }
 
@@ -24,7 +21,7 @@ void MoonGlobe::refreshFragments()
     }
 }
 
-std::string get_texture_id(ZoomLevel level, size_t row, size_t column)
+std::string MoonGlobe::get_texture_id(ZoomLevel level, size_t row, size_t column)
 {
     int picture_on_line = row_and_columns[level].second;
     std::string id = std::to_string(level) + "_" +
@@ -41,15 +38,18 @@ void MoonGlobe::generateFragments()
     float phi_step = length;
     float theta_step = height;
     for (size_t i = 0; i < current_rows; i++) {
-
         for (size_t j = 0; j < current_columns; j++) {
             Coords l_b = {height + i * theta_step,          j * phi_step};
             Coords l_t = {         i * theta_step,          j * phi_step};
             Coords r_t = {         i * theta_step, length + j * phi_step};
             Coords r_b = {height + i * theta_step, length + j * phi_step};
+            compute_decart_coord(l_b);
+            compute_decart_coord(l_t);
+            compute_decart_coord(r_t);
+            compute_decart_coord(r_b);
             // print_coord(l_b);
             std::string texture_id = get_texture_id(zoom_level, i, j);
-            // std::cout << "\n" << texture_id;
+            std::cout << "\n" << texture_id;
             std::shared_ptr<Fragment> f(new Fragment(l_b, l_t, r_t, r_b, texture_id));
             fragments.push_back(f);
         }
@@ -57,9 +57,24 @@ void MoonGlobe::generateFragments()
     std::cout << fragments.size();
 }
 
-void MoonGlobe::draw(MyShader& shader)
+void MoonGlobe::draw(MyShader& shader, const Camera& camera)
 {
+    refreshFragments();
+    static int i = 0;
+    // for (int j = 0; j <= i && i < fragments.size(); j++) {
+            // if (fragment->isVisible(camera)) {
+                // fragments[j]->draw(shader);
+            // } else {
+                // fragment.erase()
+            // }
+    // }
+    // i++;
+
     for (auto& fragment: fragments) {
-        fragment->draw(shader);
+        if (fragment->isVisible(camera)) {
+            fragment->draw(shader);
+        } else {
+            // fragment.erase()
+        }
     }
 }

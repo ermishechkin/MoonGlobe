@@ -8,6 +8,7 @@ Fragment::Fragment(Coords left_bottom, Coords left_top, Coords right_top,
     , right_top(right_top)
     , right_bottom(right_bottom)
 {
+    print_coord(left_bottom);
     generateMesh(left_bottom, left_top, right_top, right_bottom);
     // std:: << "Fragment()_end";
 }
@@ -30,13 +31,70 @@ void Fragment::generateMesh(Coords left_bottom, Coords left_top, Coords right_to
                          Shaders::Phong::TextureCoordinates{});
 }
 
-void Fragment::draw(MyShader& shader)
+void Fragment::loadTexture()
 {
     Moonglobe::ResourceManager& manager = Moonglobe::ResourceManager::instance();
-    auto texture = manager.getTexture(texture_id);
+    texture = manager.getTexture(texture_id);
+}
 
+void Fragment::draw(MyShader& shader)
+{
+    if (!texture) {
+        loadTexture();
+    }
     // std::cout << "\n count = " << texture.use_count() << std::endl;
 
     shader.setDiffuseTexture(*(texture.get()));
     mesh.draw(shader);
+}
+
+Magnum::Vector3 from_point_to_camera(const Coords& point, const Camera& camera)
+{
+    return Vector3(point.x - camera.x, point.y - camera.y, point.z - camera.z);
+}
+
+Magnum::Vector3 from_point_to_center(const Coords& point)
+{
+    return Vector3(-point.x, -point.y, -point.z);
+}
+
+void normalize(Magnum::Vector3& v)
+{
+    float l = sqrt(v.x() * v.x() + v.y() * v.y() + v.z() * v.z());
+    v.x() /= l;
+    v.y() /= l;
+    v.z() /= l;
+}
+
+bool isVisiblePoint(const Coords& coord, const Camera& camera)
+{
+    Magnum::Vector3 to_camera = from_point_to_camera(coord, camera);
+    Magnum::Vector3 to_center = from_point_to_center(coord);
+
+    to_camera = to_camera.normalized();
+    to_center = to_center.normalized();
+
+    Magnum::Math::Rad<float> angle = Magnum::Math::angle(to_camera, to_center);
+
+    Magnum::Math::Deg<float> angle_deg = Magnum::Math::Deg<float>(angle);
+
+    Magnum::Debug() << angle << " \n";
+    Magnum::Debug() << angle_deg << " \n";
+    if (angle_deg < 90.0_degf) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+bool Fragment::isVisible(const Camera& camera)
+{
+    if (!isVisiblePoint(left_bottom,  camera) &&
+        !isVisiblePoint(right_bottom, camera) &&
+        !isVisiblePoint(right_top, camera) &&
+        !isVisiblePoint(left_top,  camera)
+    ) {
+        return false;
+    }
+    return true;
 }

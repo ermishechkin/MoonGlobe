@@ -41,11 +41,13 @@ public:
     std::shared_ptr<Magnum::Texture2D> getTexture(TextureId texture_id);
 
 private:
-    std::shared_ptr<Magnum::Texture2D> loadTexture(TextureId texture_id);
-
     ResourceManager();
     ~ResourceManager();
 
+    void fillHashTable(size_t zoom_level, size_t rows, size_t columns);
+
+
+    std::shared_ptr<Magnum::Texture2D> loadTexture(TextureId texture_id);
     Magnum::PluginManager::Manager<Magnum::Trade::AbstractImporter> plugin_manager;
     std::shared_ptr<Magnum::Trade::AbstractImporter> importer;
     std::unordered_map<TextureId, std::string> id_to_filename;

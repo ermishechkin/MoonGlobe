@@ -4,8 +4,8 @@
 
 // #include <Corrade/PluginManager/Manager.h>
 // #include <Magnum/Buffer.h>
-// #include <Magnum/DefaultFramebuffer.h>
 // #include <Magnum/Renderer.h>
+// #include <Magnum/DefaultFramebuffer.h>
 // #include <Magnum/MeshTools/Interleave.h>
 // #include <Magnum/MeshTools/CompressIndices.h>
 // #include <Magnum/Platform/Sdl2Application.h>

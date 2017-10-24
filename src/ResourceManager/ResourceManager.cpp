@@ -15,30 +15,29 @@ ResourceManager::ResourceManager()
         Magnum::Error() << "Cannot load importer plugin from" << plugin_manager.pluginDirectory();
         std::exit(1);
     }
-    id_to_filename.insert({std::make_pair("0_0", "L1/0.jpg"),
-                           std::make_pair("0_1", "L1/1.jpg"),
-                           std::make_pair("0_2", "L1/2.jpg"),
-                           std::make_pair("0_3", "L1/3.jpg"),
-                           std::make_pair("0_4", "L1/4.jpg"),
-                           std::make_pair("0_5", "L1/5.jpg"),
-                           std::make_pair("0_6", "L1/6.jpg"),
-                           std::make_pair("0_7", "L1/7.jpg")});
 
-    std::string level = "1_";
-    for (int i = 0; i < 5; i++) {
-        for (int j = 0; j < 10; j++) {
-            std::string number = std::to_string(i * 10 + j);
-            std::string texture_id = level + number;
-            std::string filename = "L2/" + number + ".jpg";
-            // std::cout << texture_id << " " << filename << "\n";
-            id_to_filename.insert(std::make_pair(texture_id, filename));
-        }
-    }
+    fillHashTable(1, 2, 4);
+    fillHashTable(2, 5, 10);
+    fillHashTable(3, 10, 20);
 }
 
 ResourceManager::~ResourceManager()
 {
     // delete textures;
+}
+
+void ResourceManager::fillHashTable(size_t zoom_level, size_t rows, size_t columns)
+{
+    std::string level = std::to_string(zoom_level);
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < columns; j++) {
+            std::string number = std::to_string(i * columns + j);
+            std::string texture_id = level + "_" + number;
+            std::string filename = "L" + level + "/" + number + ".jpg";
+            // std::cout << texture_id << " " << filename << "\n";
+            id_to_filename.insert(std::make_pair(texture_id, filename));
+        }
+    }
 }
 
 ResourceManager& ResourceManager::instance()
@@ -65,14 +64,14 @@ std::shared_ptr<Magnum::Texture2D> ResourceManager::getTexture(TextureId texture
 std::shared_ptr<Magnum::Texture2D> ResourceManager::loadTexture(TextureId id)
 {
     std::cout << "\nloadTexture()" << std::endl;
-    std::cout << "\n texuture_id = " << id;
+    // std::cout << "\n texuture_id = " << id;
     std::string filename = id_to_filename[id];
 
     char s = id[0];
 
     std::string zoom_level = "level1";
     switch (s) {
-        case '1':
+        case '2':
             zoom_level = "level2";
             break;
         default:
