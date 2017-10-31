@@ -1,4 +1,5 @@
 #include "ResourceManager/ResourceManager.h"
+#include "Utils/to_str.h"
 
 using namespace Moonglobe;
 
@@ -6,13 +7,9 @@ ResourceManager* ResourceManager::manager = nullptr;
 ResourceManagerDestroyer ResourceManager::destroyer;
 
 ResourceManager::ResourceManager()
-    : plugin_manager{MAGNUM_PLUGINS_IMPORTER_DIR}
-    , importer(plugin_manager.loadAndInstantiate("JpegImporter"))
 {
-    // load jpeg plugin
-    // CORRADE_PLUGIN_IMPORT(JpegImporter) в случае статической линковки
+    importer = plugin_manager.loadAndInstantiate("JpegImporter");
     if (!importer) {
-        Magnum::Error() << "Cannot load importer plugin from" << plugin_manager.pluginDirectory();
         std::exit(1);
     }
     id_to_filename.insert({std::make_pair("0_0", "L1/0.jpg"),
@@ -27,7 +24,7 @@ ResourceManager::ResourceManager()
     std::string level = "1_";
     for (int i = 0; i < 5; i++) {
         for (int j = 0; j < 10; j++) {
-            std::string number = std::to_string(i * 10 + j);
+            std::string number = to_str(i * 10 + j);
             std::string texture_id = level + number;
             std::string filename = "L2/" + number + ".jpg";
             // std::cout << texture_id << " " << filename << "\n";
@@ -103,7 +100,7 @@ std::shared_ptr<Magnum::Texture2D> ResourceManager::loadTexture(TextureId id)
     new_texture -> setWrapping(Magnum::Sampler::Wrapping::ClampToBorder)
         .setMagnificationFilter(Magnum::Sampler::Filter::Linear)
         .setMinificationFilter(Magnum::Sampler::Filter::Linear)
-        .setStorage(1, Magnum::TextureFormat::Red, image->size())
+        .setStorage(1, Magnum::TextureFormat::Luminance, image->size())
         .setSubImage(0, {}, *image);
 
     return new_texture;

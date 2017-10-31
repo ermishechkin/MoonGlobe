@@ -12,8 +12,6 @@
 #include <Magnum/TextureFormat.h>
 #include <Magnum/Texture.h>
 
-#include "configure.h"
-
 typedef std::string TextureId;
 
 namespace Moonglobe

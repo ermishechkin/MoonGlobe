@@ -8,7 +8,7 @@
 #include <Magnum/Renderer.h>
 #include <Magnum/MeshTools/Interleave.h>
 #include <Magnum/MeshTools/CompressIndices.h>
-#include <Magnum/Platform/Sdl2Application.h>
+#include <Magnum/Platform/WindowlessEglApplication.h>
 #include <Magnum/Primitives/UVSphere.h>
 #include <Magnum/Shaders/Phong.h>
 #include <Magnum/Trade/MeshData3D.h>
@@ -17,33 +17,33 @@
 #include <Magnum/Texture.h>
 #include <Magnum/TextureFormat.h>
 #include <Magnum/PixelFormat.h>
+#include <Magnum/Platform/Context.h>
 
 #include "MoonGlobe/MoonGlobe.h"
-
-namespace Magnum {
+#include "Camera/Camera.h"
 
 using namespace Magnum::Math::Literals;
 
-class MoonGlobeApplication : public Platform::Application {
+class MoonGlobeApplication {
  public:
-    explicit MoonGlobeApplication(const Arguments &arguments);
+    MoonGlobeApplication();
+    void drawEvent();
+    void rotateEvent(float dx, float dy);
+    void rotateEvent2(float x1, float y1, float x2, float y2);
+    void zoomEvent(float scale);
 
  private:
-    void drawEvent() override;
-    void mousePressEvent(MouseEvent &event) override;
-    void mouseReleaseEvent(MouseEvent &event) override;
-    void mouseMoveEvent(MouseMoveEvent &event) override;
     void initProjectionMatrix();
     void setShaderUniforms();
 
 
+    Magnum::Platform::Context context;
+    Camera camera;
     MoonGlobe moon_globe;
     Shaders::Phong shader;
 
-    Matrix4 transformation, projection;
-    Vector2i previousMousePosition;
+    Matrix4 transformation, projection, scaling;
+    float scale_k;
 };
-
-} // end of namespace
 
 #endif

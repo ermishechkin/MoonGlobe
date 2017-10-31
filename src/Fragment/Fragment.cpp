@@ -40,3 +40,9 @@ void Fragment::draw(MyShader& shader)
     shader.setDiffuseTexture(*(texture.get()));
     mesh.draw(shader);
 }
+
+Fragment::~Fragment()
+{
+    mesh.release();
+    vertex_buffer.release();
+}

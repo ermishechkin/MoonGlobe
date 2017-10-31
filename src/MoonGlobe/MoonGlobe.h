@@ -14,7 +14,7 @@ public:
     MoonGlobe();
 
     void draw(MyShader& shader);
-    // void set_scale();
+    void set_scale(int level);
 
 private:
     void refreshFragments();
