@@ -3,6 +3,7 @@
 using namespace Magnum;
 
 const float CAMERA_BASE_DISTANCE = 10.0f;
+static bool plugin_inited = false;
 
 MoonGlobeApplication::MoonGlobeApplication()
     : shader{Shaders::Phong::Flag::DiffuseTexture},
@@ -12,7 +13,12 @@ MoonGlobeApplication::MoonGlobeApplication()
     Renderer::enable(Renderer::Feature::DepthTest);
     Renderer::enable(Renderer::Feature::FaceCulling);
     initProjectionMatrix();
-    CORRADE_PLUGIN_IMPORT(JpegImporter);
+    if (!plugin_inited) {
+        plugin_inited = true;
+        CORRADE_PLUGIN_IMPORT(JpegImporter);
+    }
+
+
 }
 
 void MoonGlobeApplication::initProjectionMatrix()

@@ -3,15 +3,12 @@
 
 using namespace Moonglobe;
 
+std::shared_ptr<Magnum::Trade::AbstractImporter> ResourceManager::importer;
 ResourceManager* ResourceManager::manager = nullptr;
 ResourceManagerDestroyer ResourceManager::destroyer;
 
 ResourceManager::ResourceManager()
 {
-    importer = plugin_manager.loadAndInstantiate("JpegImporter");
-    if (!importer) {
-        std::exit(1);
-    }
     id_to_filename.insert({std::make_pair("0_0", "L1/0.jpg"),
                            std::make_pair("0_1", "L1/1.jpg"),
                            std::make_pair("0_2", "L1/2.jpg"),
@@ -38,14 +35,32 @@ ResourceManager::~ResourceManager()
     // delete textures;
 }
 
+ResourceManagerDestroyer::~ResourceManagerDestroyer()
+{
+    delete instance;
+}
+
 ResourceManager& ResourceManager::instance()
 {
+    if (importer == nullptr) {
+        Magnum::PluginManager::Manager<Magnum::Trade::AbstractImporter> plugin_manager;
+        importer = plugin_manager.loadAndInstantiate("JpegImporter");
+        if (!importer) {
+            std::exit(1);
+        }
+    }
     if (manager == nullptr) {
         // std::cout << "\ncreate ResourceManager\n";
         manager = new ResourceManager();
         destroyer.initialize(manager);
     }
     return *manager;
+}
+
+void ResourceManager::clear()
+{
+//    delete manager;
+    manager = nullptr;
 }
 
 std::shared_ptr<Magnum::Texture2D> ResourceManager::getTexture(TextureId texture_id)

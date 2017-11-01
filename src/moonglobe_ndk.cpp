@@ -1,5 +1,6 @@
 #include <jni.h>
 #include "MoonGlobeApplication.h"
+#include "ResourceManager/ResourceManager.h"
 
 MoonGlobeApplication *app = nullptr;
 
@@ -14,6 +15,7 @@ extern "C" {
 JNIEXPORT void JNICALL
 Java_com_example_alex_moonmap_CustomGLLib_Init(JNIEnv *, jobject)
 {
+    Moonglobe::ResourceManager::clear();
     app = new MoonGlobeApplication();
 }
 
