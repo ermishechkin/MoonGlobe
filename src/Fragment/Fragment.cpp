@@ -98,3 +98,9 @@ bool Fragment::isVisible(const Camera& camera)
     }
     return true;
 }
+
+Fragment::~Fragment()
+{
+    mesh.release();
+    vertex_buffer.release();
+}

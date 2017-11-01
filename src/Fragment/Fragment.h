@@ -39,6 +39,7 @@ public:
     Fragment() = delete;
     Fragment(const Fragment&) = delete;
     Fragment operator = (const Fragment&) = delete;
+    ~Fragment();
 
 
 private:

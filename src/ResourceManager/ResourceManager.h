@@ -12,8 +12,6 @@
 #include <Magnum/TextureFormat.h>
 #include <Magnum/Texture.h>
 
-#include "configure.h"
-
 typedef std::string TextureId;
 
 namespace Moonglobe
@@ -24,11 +22,11 @@ class ResourceManager;
 class ResourceManagerDestroyer
 {
 public:
-    ~ResourceManagerDestroyer() { delete instance; }
+    ~ResourceManagerDestroyer();
     void initialize(ResourceManager* manager) { instance = manager; }
 
 private:
-    ResourceManager* instance;
+    ResourceManager* instance = nullptr;
 };
 
 // signleton
@@ -36,6 +34,7 @@ class ResourceManager
 {
 public:
     static ResourceManager& instance();
+    static void clear();
 
     bool freeTexture(TextureId texture_id);
     std::shared_ptr<Magnum::Texture2D> getTexture(TextureId texture_id);
@@ -49,7 +48,7 @@ private:
 
     std::shared_ptr<Magnum::Texture2D> loadTexture(TextureId texture_id);
     Magnum::PluginManager::Manager<Magnum::Trade::AbstractImporter> plugin_manager;
-    std::shared_ptr<Magnum::Trade::AbstractImporter> importer;
+    static std::shared_ptr<Magnum::Trade::AbstractImporter> importer;
     std::unordered_map<TextureId, std::string> id_to_filename;
     std::unordered_map<TextureId, std::shared_ptr<Magnum::Texture2D>> textures;
     static ResourceManager* manager;

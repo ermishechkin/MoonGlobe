@@ -3,52 +3,51 @@ cmake_minimum_required(VERSION 2.8.12)
 if (NOT PC_BUILD)
     message(android_version)
     #----------------------- compile options ------------------------
-set(CMAKE_CXX_STANDARD 14)
+    set(CMAKE_CXX_STANDARD 14)
 
+    #----------------------- add libs ------------------------
 
-#----------------------- add libs ------------------------
+    #module_path for magnum, magnum-plugins, corrade
+    set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/modules/)
 
-#module_path for magnum, magnum-plugins, corrade
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/modules/)
+    # lib components
+    set(WITH_SHADERS                   ON)
+    set(WITH_MESHTOOLS                 ON)
+    set(WITH_PRIMITIVES                ON)
+    set(WITH_TGAIMPORTER               ON)
+    set(WITH_JPEGIMPORTER              ON)
+    set(WITH_PNGIMPORTER               ON)
+    set(WITH_WINDOWLESSEGLAPPLICATION  ON)
+    set(WITH_JPEGIMPORTER              ON CACHE BOOL "22" FORCE)
 
-# lib components
-set(WITH_SHADERS                   ON)
-set(WITH_MESHTOOLS                 ON)
-set(WITH_PRIMITIVES                ON)
-set(WITH_TGAIMPORTER               ON)
-set(WITH_JPEGIMPORTER              ON)
-set(WITH_PNGIMPORTER               ON)
-set(WITH_WINDOWLESSEGLAPPLICATION  ON)
-set(WITH_JPEGIMPORTER              ON CACHE BOOL "22" FORCE)
+    # set target mobile version OpenGL
+    set(TARGET_GLES   ON)
+    set(TARGET_GLES2 OFF)
 
-# set target mobile version OpenGL
-set(TARGET_GLES   ON)
-set(TARGET_GLES2 OFF)
+    set(BUILD_STATIC ON)
+    set(BUILD_PLUGINS_STATIC ON)
+    set(BUILD_STATIC ON CACHE BOOL "" FORCE)
 
-set(BUILD_STATIC ON)
-set(BUILD_PLUGINS_STATIC ON)
-set(BUILD_STATIC ON CACHE BOOL "" FORCE)
+    add_subdirectory(libjpeg)
+    find_package(JPEG REQUIRED)
+    add_subdirectory(libs/corrade)
+    add_subdirectory(libs/magnum)
+    add_subdirectory(libs/magnum-plugins)
 
-add_subdirectory(libjpeg)
-find_package(JPEG REQUIRED)
-add_subdirectory(libs/corrade)
-add_subdirectory(libs/magnum)
-add_subdirectory(libs/magnum-plugins)
-
-find_package(Magnum REQUIRED
+    find_package(Magnum REQUIRED
         Primitives
         MeshTools
         Shaders
         WindowlessEglApplication)
 
-find_package(MagnumPlugins REQUIRED JpegImporter)
+        find_package(MagnumPlugins REQUIRED JpegImporter)
 
-#wtf?
-set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
+    #wtf?
+    set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
 
-set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
+    set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
 
-set(LIBS ${LIBS}
+    set(LIBS ${LIBS}
         MagnumPlugins::JpegImporter
         JPEG
         Magnum::WindowlessEglApplication
@@ -57,33 +56,33 @@ set(LIBS ${LIBS}
         Magnum::MeshTools
         Magnum::Magnum)
 
-#----------------------- add resources ------------------------
-corrade_add_resource(RES_LEVEL1 resources/level1.conf)
-corrade_add_resource(RES_LEVEL2 resources/level2.conf)
+    #----------------------- add resources ------------------------
+    corrade_add_resource(RES_LEVEL1 resources/level1.conf)
+    corrade_add_resource(RES_LEVEL2 resources/level2.conf)
 
-set(RESOURCES ${RES_LEVEL1} ${RES_LEVEL2})
+    set(RESOURCES ${RES_LEVEL1} ${RES_LEVEL2})
 
-#----------------------- sources ------------------------
-set(SOURCES
-    src/Utils/to_str.cpp
-    src/moonglobe_ndk.cpp
-    src/Camera/Camera.cpp
-    src/Fragment/Fragment.cpp
-    src/MoonGlobe/MoonGlobe.cpp
-    src/Utils/MeshGenerators.cpp
-    src/MoonGlobeApplication.cpp
-    src/ResourceManager/ResourceManager.cpp
-)
+    #----------------------- sources ------------------------
+    set(SOURCES
+        src/Utils/to_str.cpp
+        src/moonglobe_ndk.cpp
+        src/Camera/Camera.cpp
+        src/Fragment/Fragment.cpp
+        src/MoonGlobe/MoonGlobe.cpp
+        src/Utils/MeshGenerators.cpp
+        src/MoonGlobeApplication.cpp
+        src/ResourceManager/ResourceManager.cpp
+    )
 
-#----------------------- headers ---------------------------
-include_directories(libs/magnum/src/)
-include_directories(src)
+    #----------------------- headers ---------------------------
+    include_directories(libs/magnum/src/)
+    include_directories(src)
 
-#----------------------- add target ------------------------
-add_library(native-lib SHARED ${SOURCES} ${RESOURCES})
+    #----------------------- add target ------------------------
+    add_library(native-lib SHARED ${SOURCES} ${RESOURCES})
 
-#----------------------- link libraries to target ------------------------
-target_link_libraries(native-lib ${LIBS})
+    #----------------------- link libraries to target ------------------------
+    target_link_libraries(native-lib ${LIBS})
 
 else()
     project(m2-sphere)
@@ -110,7 +109,7 @@ else()
     message(STATUS "binaries output: " ${M2_BIN_DIR})
     message(STATUS "libraries output: " ${M2_LIB_DIR})
 
-# ---------------------------  paths  ---------------------------
+    # ---------------------------  paths  ---------------------------
     set(CMAKE_EXECUTABLE_OUTPUT_DIRECTORY_DEBUG   ${M2_BIN_DIR})
     set(CMAKE_EXECUTABLE_OUTPUT_DIRECTORY_RELEASE ${M2_BIN_DIR})
     set(CMAKE_EXECUTABLE_OUTPUT_PATH              ${M2_BIN_DIR})
@@ -121,17 +120,17 @@ else()
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE    ${M2_BIN_DIR})
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY            ${M2_BIN_DIR})
 
-#----------------------- compile options ------------------------
+    #----------------------- compile options ------------------------
     set(CMAKE_CXX_STANDARD 14)
 
 
-#----------------------- add libs ------------------------
+    #----------------------- add libs ------------------------
 
-#module_path for magnum, magnum-plugins, corrade
+    #module_path for magnum, magnum-plugins, corrade
     set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/libs/modules/")
     set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/bin/libs)
 
-# lib components
+    # lib components
     set(WITH_SHADERS         ON)
     set(WITH_MESHTOOLS       ON)
     set(WITH_PRIMITIVES      ON)
@@ -140,7 +139,7 @@ else()
     set(WITH_JPEGIMPORTER    ON)
     set(WITH_PNGIMPORTER     ON)
 
-# set target mobile version OpenGL
+    # set target mobile version OpenGL
     set(TARGET_GLES ON)
     set(BUILD_STATIC OFF)
     set(BUILD_PLUGINS_STATIC OFF)
@@ -156,7 +155,7 @@ else()
         Sdl2Application)
 
 
-#wtf?
+    #wtf?
     set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
 
     set(MAGNUM_PLUGINS_IMPORTER_DIR "${M2_LIB_DIR}")
@@ -173,18 +172,18 @@ else()
 
 # set(LIBS ${LIBS} MagnumPlugins::JpegImporter)
 
-#----------------------- apply configurations files ------------------------
+    #----------------------- apply configurations files ------------------------
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/configure.h.cmake
         ${CMAKE_CURRENT_SOURCE_DIR}/src/configure.h)
     include_directories(${CMAKE_CURRENT_BINARY_DIR}/src)
 
-#----------------------- add resources ------------------------
+    #----------------------- add resources ------------------------
     corrade_add_resource(RES_LEVEL1 resources/level1.conf)
     corrade_add_resource(RES_LEVEL2 resources/level2.conf)
     corrade_add_resource(RES_LEVEL3 resources/level3.conf)
     set(RESOURCES ${RES_LEVEL1} ${RES_LEVEL2}) # ${RES_LEVEL3})
 
-#----------------------- sources ------------------------
+    #----------------------- sources ------------------------
     set(SOURCES
         src/pc/main.cpp
         src/Fragment/Fragment.cpp
@@ -195,13 +194,13 @@ else()
         src/Camera/Camera.cpp
     )
 
-#----------------------- headers ---------------------------
+    #----------------------- headers ---------------------------
     include_directories(libs/magnum/src/)
     include_directories(src)
 
-#----------------------- add target ------------------------
+    #----------------------- add target ------------------------
     add_executable(${PROJECT_NAME} ${SOURCES} ${RESOURCES})
 
-#----------------------- link libraries to target ------------------------
+    #----------------------- link libraries to target ------------------------
     target_link_libraries(${PROJECT_NAME} ${LIBS})
 endif()

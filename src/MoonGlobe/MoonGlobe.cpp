@@ -1,4 +1,5 @@
 #include "MoonGlobe/MoonGlobe.h"
+#include "Utils/to_str.h"
 
 
 MoonGlobe::MoonGlobe()
@@ -16,17 +17,21 @@ void MoonGlobe::refreshFragments()
     current_columns = row_and_columns[zoom_level].second;
 
     if (fragments.size() != current_rows * current_columns) {
-        std::cout << "\nrefresh Fragments\n";
+//        std::cout << "\nrefresh Fragments\n";
+        // __android_log_print(ANDROID_LOG_DEBUG, "KEK", "Regen %d", zoom_level);
+        // __android_log_print(ANDROID_LOG_DEBUG, "KEK", "%s", "start_refresh_fragmensts");
         fragments.clear();
+        // __android_log_print(ANDROID_LOG_DEBUG, "KEK", "%s", "start_refresh_fragmensts2");
         generateFragments();
+        // __android_log_print(ANDROID_LOG_DEBUG, "KEK", "%s", "end_refresh_fragmensts");
     }
 }
 
 std::string MoonGlobe::get_texture_id(ZoomLevel level, size_t row, size_t column)
 {
     int picture_on_line = row_and_columns[level].second;
-    std::string id = std::to_string(level) + "_" +
-                     std::to_string(picture_on_line * row + column);
+    std::string id = to_str(level) + "_" +
+                     to_str(picture_on_line * row + column);
     return id;
 }
 
@@ -61,16 +66,6 @@ void MoonGlobe::generateFragments()
 void MoonGlobe::draw(MyShader& shader, const Camera& camera)
 {
     refreshFragments();
-    static int i = 0;
-    // for (int j = 0; j <= i && i < fragments.size(); j++) {
-            // if (fragment->isVisible(camera)) {
-                // fragments[j]->draw(shader);
-            // } else {
-                // fragment.erase()
-            // }
-    // }
-    // i++;
-
     for (auto& fragment: fragments) {
         if (fragment->isVisible(camera)) {
             fragment->draw(shader);
@@ -78,4 +73,9 @@ void MoonGlobe::draw(MyShader& shader, const Camera& camera)
             // fragment.erase()
         }
     }
+}
+
+void MoonGlobe::set_scale(int level)
+{
+    zoom_level = level;
 }
