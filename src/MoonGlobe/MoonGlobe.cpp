@@ -72,10 +72,10 @@ void MoonGlobe::draw(MyShader& shader, const Camera& camera)
     // i++;
 
     for (auto& fragment: fragments) {
-        // if (fragment->isVisible(camera)) {
+        if (fragment->isVisible(camera)) {
             fragment->draw(shader);
-        // } else {
+        } else {
             // fragment.erase()
-        // }
+        }
     }
 }
