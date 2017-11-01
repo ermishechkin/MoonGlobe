@@ -6,6 +6,7 @@ MoonGlobe::MoonGlobe()
 {
     row_and_columns.insert(std::make_pair(1, std::make_pair(2,  4)));
     row_and_columns.insert(std::make_pair(2, std::make_pair(5, 10)));
+    row_and_columns.insert(std::make_pair(3, std::make_pair(10, 20)));
     refreshFragments();
 }
 
@@ -71,10 +72,10 @@ void MoonGlobe::draw(MyShader& shader, const Camera& camera)
     // i++;
 
     for (auto& fragment: fragments) {
-        if (fragment->isVisible(camera)) {
+        // if (fragment->isVisible(camera)) {
             fragment->draw(shader);
-        } else {
+        // } else {
             // fragment.erase()
-        }
+        // }
     }
 }

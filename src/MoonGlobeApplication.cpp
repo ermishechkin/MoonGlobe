@@ -47,24 +47,6 @@ void MoonGlobeApplication::drawEvent()
     swapBuffers();
 }
 
-// void MoonGlobeApplication::drawEvent()
-// {
-//     defaultFramebuffer.clear(FramebufferClear::Color | FramebufferClear::Depth);
-//     Coords l_t = {0,         0};
-//     Coords l_b = {M_PI / 2,  0};
-//     Coords r_t = {0,         M_PI / 2};
-//     Coords r_b = {M_PI / 2,  M_PI / 2};
-//     std::cout << "\n";
-//     static Fragment f(l_b, l_t, r_t, r_b, "0");
-//     std::cout << "\nFINISH\n" << M_PI;
-//
-//     setShaderUniforms();
-//     // shader.setDiffuseColor(Color4::fromHSV(216.0_degf, 0.85f, 1.0f));
-//
-//     f.draw(shader);
-//     swapBuffers();
-// }
-
 void MoonGlobeApplication::mousePressEvent(MouseEvent &event)
 {
     if (event.button() != MouseEvent::Button::Left)
@@ -84,6 +66,7 @@ void MoonGlobeApplication::mouseMoveEvent(MouseMoveEvent &event)
 {
     if (!(event.buttons() & MouseMoveEvent::Button::Left))
         return;
+        
     const Vector2 delta = 3.0f *
         Vector2{event.position() - previousMousePosition} /
         Vector2{defaultFramebuffer.viewport().size()};

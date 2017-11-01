@@ -74,6 +74,9 @@ std::shared_ptr<Magnum::Texture2D> ResourceManager::loadTexture(TextureId id)
         case '2':
             zoom_level = "level2";
             break;
+        case '3':
+            zoom_level = "level3";
+            break;
         default:
             zoom_level = "level1";
             break;

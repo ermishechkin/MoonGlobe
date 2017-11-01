@@ -100,7 +100,7 @@ corrade_add_resource(RES_LEVEL1 resources/level1.conf)
 corrade_add_resource(RES_LEVEL2 resources/level2.conf)
 corrade_add_resource(RES_LEVEL3 resources/level3.conf)
 
-set(RESOURCES ${RES_LEVEL1} ${RES_LEVEL2} ${RES_LEVEL3})
+set(RESOURCES ${RES_LEVEL1} ${RES_LEVEL2}) # ${RES_LEVEL3})
 
 #----------------------- sources ------------------------
 set(SOURCES
