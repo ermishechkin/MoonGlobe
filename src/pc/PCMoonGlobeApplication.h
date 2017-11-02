@@ -1,5 +1,5 @@
-#ifndef MOON_GLOBE_APPLICATION_H
-#define MOON_GLOBE_APPLICATION_H
+#ifndef PC_MOON_GLOBE_APPLICATION_H
+#define PC_MOON_GLOBE_APPLICATION_H
 
 // #include "Fragment/Fragment.h"
 #include <Corrade/PluginManager/Manager.h>
@@ -20,14 +20,15 @@
 
 #include "MoonGlobe/MoonGlobe.h"
 #include "Camera/Camera.h"
+#include "LabelManager/LabelManager.h"
 
 namespace Magnum {
 
 using namespace Magnum::Math::Literals;
 
-class MoonGlobeApplication : public Platform::Application {
+class PCMoonGlobeApplication : public Platform::Application {
  public:
-    explicit MoonGlobeApplication(const Arguments &arguments);
+    explicit PCMoonGlobeApplication(const Arguments &arguments);
 
  private:
     void drawEvent() override;
@@ -38,6 +39,7 @@ class MoonGlobeApplication : public Platform::Application {
     void setShaderUniforms();
 
 
+    LabelManager labels;
     MoonGlobe moon_globe;
     Shaders::Phong shader;
     Camera camera;

@@ -1,6 +1,5 @@
-#include "pc/MoonGlobeApplication.h"
+#include "pc/PCMoonGlobeApplication.h"
 #include <iostream>
 #include "Fragment/Fragment.h"
-MAGNUM_APPLICATION_MAIN(Magnum::MoonGlobeApplication)
-
+MAGNUM_APPLICATION_MAIN(Magnum::PCMoonGlobeApplication)
 #include <Magnum/Magnum.h>

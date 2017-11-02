@@ -11,6 +11,7 @@ if (NOT PC_BUILD)
     set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/modules/)
 
     # lib components
+    set(WITH_FREETYPEFONT              ON)
     set(WITH_SHADERS                   ON)
     set(WITH_MESHTOOLS                 ON)
     set(WITH_PRIMITIVES                ON)
@@ -40,7 +41,7 @@ if (NOT PC_BUILD)
         Shaders
         WindowlessEglApplication)
 
-        find_package(MagnumPlugins REQUIRED JpegImporter)
+    find_package(MagnumPlugins REQUIRED JpegImporter)
 
     #wtf?
     set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
@@ -54,7 +55,8 @@ if (NOT PC_BUILD)
         Magnum::Primitives
         Magnum::Shaders
         Magnum::MeshTools
-        Magnum::Magnum)
+        Magnum::Magnum
+    )
 
     #----------------------- add resources ------------------------
     corrade_add_resource(RES_LEVEL1 resources/level1.conf)
@@ -85,6 +87,7 @@ if (NOT PC_BUILD)
     target_link_libraries(native-lib ${LIBS})
 
 else()
+    message(PC_VERSION)
     project(m2-sphere)
     get_filename_component(M2_ROOT "${CMAKE_SOURCE_DIR}" ABSOLUTE)
 
@@ -131,19 +134,26 @@ else()
     set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/bin/libs)
 
     # lib components
+    set(WITH_TEXT            ON)
+    set(WITH_FREETYPEFONT    ON)
     set(WITH_SHADERS         ON)
     set(WITH_MESHTOOLS       ON)
     set(WITH_PRIMITIVES      ON)
     set(WITH_TGAIMPORTER     ON)
     set(WITH_SDL2APPLICATION ON)
     set(WITH_JPEGIMPORTER    ON)
-    set(WITH_PNGIMPORTER     ON)
+    # set(WITH_PNGIMPORTER     ON)
+    set(WITH_JPEGIMPORTER    ON CACHE BOOL "22" FORCE)
 
     # set target mobile version OpenGL
     set(TARGET_GLES ON)
-    set(BUILD_STATIC OFF)
-    set(BUILD_PLUGINS_STATIC OFF)
+    set(BUILD_STATIC ON)
+    set(BUILD_PLUGINS_STATIC ON)
+    set(BUILD_STATIC ON CACHE BOOL "" FORCE)
 
+
+    add_subdirectory(libs/libjpeg)
+    find_package(JPEG REQUIRED)
     add_subdirectory(libs/corrade)
     add_subdirectory(libs/magnum)
     add_subdirectory(libs/magnum-plugins)
@@ -152,46 +162,53 @@ else()
         Primitives
         MeshTools
         Shaders
+        Text
         Sdl2Application)
 
+    find_package(MagnumPlugins REQUIRED JpegImporter FreeTypeFont)
 
     #wtf?
     set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
 
-    set(MAGNUM_PLUGINS_IMPORTER_DIR "${M2_LIB_DIR}")
+    # set(MAGNUM_PLUGINS_IMPORTER_DIR "${M2_LIB_DIR}")
 
     set(LIBS ${LIBS}
+        MagnumPlugins::FreeTypeFont
+        MagnumPlugins::JpegImporter
+        JPEG
         Magnum
         Magnum::Application
         Magnum::Primitives
         Magnum::Shaders
         Magnum::MeshTools
+        Magnum::Text
     )
 
-# find_package(MagnumPlugins REQUIRED JpegImporter)
-
-# set(LIBS ${LIBS} MagnumPlugins::JpegImporter)
-
+    message(${LIBS})
     #----------------------- apply configurations files ------------------------
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/configure.h.cmake
         ${CMAKE_CURRENT_SOURCE_DIR}/src/configure.h)
+
     include_directories(${CMAKE_CURRENT_BINARY_DIR}/src)
 
     #----------------------- add resources ------------------------
     corrade_add_resource(RES_LEVEL1 resources/level1.conf)
     corrade_add_resource(RES_LEVEL2 resources/level2.conf)
     corrade_add_resource(RES_LEVEL3 resources/level3.conf)
-    set(RESOURCES ${RES_LEVEL1} ${RES_LEVEL2}) # ${RES_LEVEL3})
+    # set(RESOURCES ${RES_LEVEL1} ${RES_LEVEL2}) # ${RES_LEVEL3})
 
     #----------------------- sources ------------------------
     set(SOURCES
         src/pc/main.cpp
+        src/Label/Label.cpp
+        src/Camera/Camera.cpp
         src/Fragment/Fragment.cpp
         src/MoonGlobe/MoonGlobe.cpp
         src/Utils/MeshGenerators.cpp
-        src/pc/MoonGlobeApplication.cpp
+        src/Utils/to_str.cpp
+        src/pc/PCMoonGlobeApplication.cpp
+        src/LabelManager/LabelManager.cpp
         src/ResourceManager/ResourceManager.cpp
-        src/Camera/Camera.cpp
     )
 
     #----------------------- headers ---------------------------

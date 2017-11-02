@@ -1,19 +1,20 @@
-#include "MoonGlobeApplication.h"
+#include "PCMoonGlobeApplication.h"
 
 using namespace Magnum;
 
-MoonGlobeApplication::MoonGlobeApplication(const Arguments &arguments)
+PCMoonGlobeApplication::PCMoonGlobeApplication(const Arguments &arguments)
     : Platform::Application{arguments, Configuration{}.setTitle("sphere")}
     , shader{Shaders::Phong::Flag::DiffuseTexture}
     , camera(0, 0, -10)
 {
     //enable depthtest and faceculling
+    // CORRADE_PLUGIN_IMPORT(JpegImporter);
     Renderer::enable(Renderer::Feature::DepthTest);
     Renderer::enable(Renderer::Feature::FaceCulling);
     initProjectionMatrix();
 }
 
-void MoonGlobeApplication::initProjectionMatrix()
+void PCMoonGlobeApplication::initProjectionMatrix()
 {
     // set transform matrix
     transformation = Matrix4::rotationX(30.0_degf) * Matrix4::rotationY(40.0_degf);
@@ -24,7 +25,7 @@ void MoonGlobeApplication::initProjectionMatrix()
         * Matrix4::translation(Vector3::zAxis(camera.z));
 }
 
-void MoonGlobeApplication::setShaderUniforms()
+void PCMoonGlobeApplication::setShaderUniforms()
 {
     // set shaders uniforms
     shader.setLightPosition({0.0f,1.0f, 5.0f})
@@ -35,10 +36,14 @@ void MoonGlobeApplication::setShaderUniforms()
         .setProjectionMatrix(projection);
 }
 
-void MoonGlobeApplication::drawEvent()
+// void PCMoonGlobeApplication::drawEvent()
+// {
+    // labels.draw(transformation, projection);
+// }
+
+void PCMoonGlobeApplication::drawEvent()
 {
     defaultFramebuffer.clear(FramebufferClear::Color | FramebufferClear::Depth);
-
 
     setShaderUniforms();
     // shader.setDiffuseColor(Color4::fromHSV(216.0_degf, 0.85f, 1.0f));
@@ -47,7 +52,7 @@ void MoonGlobeApplication::drawEvent()
     swapBuffers();
 }
 
-void MoonGlobeApplication::mousePressEvent(MouseEvent &event)
+void PCMoonGlobeApplication::mousePressEvent(MouseEvent &event)
 {
     if (event.button() != MouseEvent::Button::Left)
         return;
@@ -56,17 +61,17 @@ void MoonGlobeApplication::mousePressEvent(MouseEvent &event)
     event.setAccepted();
 }
 
-void MoonGlobeApplication::mouseReleaseEvent(MouseEvent &event)
+void PCMoonGlobeApplication::mouseReleaseEvent(MouseEvent &event)
 {
     event.setAccepted();
     redraw();
 }
 
-void MoonGlobeApplication::mouseMoveEvent(MouseMoveEvent &event)
+void PCMoonGlobeApplication::mouseMoveEvent(MouseMoveEvent &event)
 {
     if (!(event.buttons() & MouseMoveEvent::Button::Left))
         return;
-        
+
     const Vector2 delta = 3.0f *
         Vector2{event.position() - previousMousePosition} /
         Vector2{defaultFramebuffer.viewport().size()};
