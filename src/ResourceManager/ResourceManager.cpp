@@ -21,16 +21,17 @@ ResourceManager::~ResourceManager()
 
 void ResourceManager::fillHashTable(size_t zoom_level, size_t rows, size_t columns)
 {
-    std::string level = std::to_string(zoom_level);
+    std::string level = to_str(zoom_level);
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < columns; j++) {
-            std::string number = std::to_string(i * columns + j);
+            std::string number = to_str(i * columns + j);
             std::string texture_id = level + "_" + number;
             std::string filename = "L" + level + "/" + number + ".jpg";
             // std::cout << texture_id << " " << filename << "\n";
             id_to_filename.insert(std::make_pair(texture_id, filename));
         }
     }
+}
 
 ResourceManagerDestroyer::~ResourceManagerDestroyer()
 {

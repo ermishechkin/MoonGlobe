@@ -7,7 +7,7 @@ static bool plugin_inited = false;
 
 MoonGlobeApplication::MoonGlobeApplication()
     : shader{Shaders::Phong::Flag::DiffuseTexture},
-      scaling(Matrix4::scaling({1.0, 1.0, 1.0})), scale_k(1), camera(0, 0, -11)
+      scaling(Matrix4::scaling({1.0, 1.0, 1.0})), scale_k(1), camera(0, 0, -CAMERA_BASE_DISTANCE)
 {
     //enable depthtest and faceculling
     Renderer::enable(Renderer::Feature::DepthTest);
@@ -52,7 +52,7 @@ void MoonGlobeApplication::drawEvent()
 
     setShaderUniforms();
     // shader.setDiffuseColor(Color4::fromHSV(216.0_degf, 0.85f, 1.0f));
-    moon_globe.draw(shader);
+    moon_globe.draw(shader, camera);
 }
 
 void MoonGlobeApplication::rotateEvent(float dx, float dy)
@@ -86,11 +86,11 @@ void MoonGlobeApplication::zoomEvent(float scale)
     scale_k += scale - 1.0;
     scale_k = scale_k > (CAMERA_BASE_DISTANCE-0.5f) ? (CAMERA_BASE_DISTANCE-0.5f) : scale_k;
     scale_k = scale_k < 0.5f ? 0.5f : scale_k;
-    camera.scale(scale_k);
+//    camera.scale(scale_k);
     scaling = Matrix4::scaling({scale_k, scale_k, scale_k});
     if (scale_k > 4) {
-        moon_globe.set_scale(1);
+        moon_globe.set_scale(2);
     } else {
-        moon_globe.set_scale(0);
+        moon_globe.set_scale(1);
     }
 }

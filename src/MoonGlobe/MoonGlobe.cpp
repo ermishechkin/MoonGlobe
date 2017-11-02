@@ -3,7 +3,7 @@
 
 
 MoonGlobe::MoonGlobe()
-    : zoom_level(2)
+    : zoom_level(1)
 {
     row_and_columns.insert(std::make_pair(1, std::make_pair(2,  4)));
     row_and_columns.insert(std::make_pair(2, std::make_pair(5, 10)));
