@@ -63,8 +63,11 @@ void MoonGlobeApplication::rotateEvent(float dx, float dy)
     transformation = Matrix4::rotationX(Rad{delta.y()/scale_k}) *
                      Matrix4::rotationY(Rad{delta.x()/scale_k}) *
                      transformation;
-    Vector4 cam{0, 0, CAMERA_BASE_DISTANCE, 1};
+    Vector4 cam{0, 0, -CAMERA_BASE_DISTANCE, 1};
     cam = transformation.inverted() * cam;
+    camera.x = cam.x();
+    camera.y = cam.y();
+    camera.z = cam.z();
 }
 
 void MoonGlobeApplication::rotateEvent2(float x1, float y1, float x2, float y2)
