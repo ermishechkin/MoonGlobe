@@ -1,11 +1,11 @@
 #include <jni.h>
 #include "MoonGlobeApplication.h"
-#include "ResourceManager/ResourceManager.h"
+#include "android/asset_manager_jni.h"
 
 MoonGlobeApplication *app = nullptr;
 
 extern "C" {
-    JNIEXPORT void JNICALL Java_com_example_alex_moonmap_CustomGLLib_Init(JNIEnv *env, jobject object);
+    JNIEXPORT void JNICALL Java_com_example_alex_moonmap_CustomGLLib_Init(JNIEnv *env, jobject object, jobject assetManager);
     JNIEXPORT void JNICALL Java_com_example_alex_moonmap_CustomGLLib_Rotate(JNIEnv *env, jobject object, jfloat dx, jfloat dy);
     JNIEXPORT void JNICALL Java_com_example_alex_moonmap_CustomGLLib_Rotate2(JNIEnv *env, jobject object, jfloat x1, jfloat y1, jfloat x2, jfloat y2);
     JNIEXPORT void JNICALL Java_com_example_alex_moonmap_CustomGLLib_Draw(JNIEnv *env, jobject object);
@@ -13,9 +13,10 @@ extern "C" {
 }
 
 JNIEXPORT void JNICALL
-Java_com_example_alex_moonmap_CustomGLLib_Init(JNIEnv *, jobject)
+Java_com_example_alex_moonmap_CustomGLLib_Init(JNIEnv *env, jobject, jobject assetManager)
 {
     Moonglobe::ResourceManager::clear();
+    Moonglobe::ResourceManager::setAssetManager(AAssetManager_fromJava(env, assetManager));
     app = new MoonGlobeApplication();
 }
 
