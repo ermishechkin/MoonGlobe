@@ -9,6 +9,6 @@ fi
 
 mkdir build
 cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake .. -DCMAKE_BUILD_TYPE=Release -DPC_BUILD=1
 cmake --build .
 echo "build completed"
