@@ -11,6 +11,8 @@
 #include <Magnum/Trade/ImageData.h>
 #include <Magnum/TextureFormat.h>
 #include <Magnum/Texture.h>
+#include <Magnum/Text/AbstractFont.h>
+#include <Magnum/Text/DistanceFieldGlyphCache.h>
 
 typedef std::string TextureId;
 class AAssetManager;
@@ -41,18 +43,24 @@ public:
     bool freeTexture(TextureId texture_id);
     std::shared_ptr<Magnum::Texture2D> getTexture(TextureId texture_id);
 
+    void fillGlyphCache(Magnum::Text::GlyphCache& cache);
+    std::shared_ptr<Magnum::Text::AbstractFont> getFont();
+
 private:
     ResourceManager();
     ~ResourceManager();
 
+    void loadFont();
     void fillHashTable(size_t zoom_level, size_t rows, size_t columns);
-
-
     std::shared_ptr<Magnum::Texture2D> loadTexture(TextureId texture_id);
-    Magnum::PluginManager::Manager<Magnum::Trade::AbstractImporter> plugin_manager;
-    static std::shared_ptr<Magnum::Trade::AbstractImporter> importer;
+
+    bool font_is_loaded;
+    static std::shared_ptr<Magnum::Text::AbstractFont> font_importer;
+
     std::unordered_map<TextureId, std::string> id_to_filename;
+    static std::shared_ptr<Magnum::Trade::AbstractImporter> importer;
     std::unordered_map<TextureId, std::shared_ptr<Magnum::Texture2D>> textures;
+
     static ResourceManager* manager;
     static AAssetManager *assetManager;
     friend ResourceManagerDestroyer;
