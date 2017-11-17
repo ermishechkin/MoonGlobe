@@ -57,14 +57,18 @@ class FreeTypeLayouter: public AbstractLayouter {
 FT_Library FreeTypeFont::library = nullptr;
 
 void FreeTypeFont::initialize() {
-    if(library) return;
-
+    if(library) {
+        Error() << "free_type_library_is_initialized\n";
+        return;
+    }
+    Error() << "do_init_free_type\n";
     CORRADE_INTERNAL_ASSERT_OUTPUT(FT_Init_FreeType(&library) == 0);
+    Error() << (library == nullptr) << " init_free_type_success\n";
 }
 
 void FreeTypeFont::finalize() {
     if(!library) return;
-
+    Error() << "finalize\n";
     CORRADE_INTERNAL_ASSERT_OUTPUT(FT_Done_FreeType(library) == 0);
     library = nullptr;
 }
@@ -84,6 +88,7 @@ auto FreeTypeFont::doOpenSingleData(const Containers::ArrayView<const char> data
     _data = Containers::Array<unsigned char>(data.size());
     std::copy(data.begin(), data.end(), _data.begin());
 
+    Error() << (library == nullptr);
     CORRADE_ASSERT(library, "Text::FreeTypeFont::openSingleData(): initialize() was not called", {});
     /** @todo ability to specify different font in TTC collection */
     if(FT_New_Memory_Face(library, _data.begin(), _data.size(), 0, &ftFont) != 0) return {};

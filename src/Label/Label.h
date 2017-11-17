@@ -12,26 +12,37 @@
 #include <memory>
 #include <tuple>
 
+#include "Utils/MeshGenerators.h"
+
 using namespace Magnum;
 
 class Label
 {
 public:
-    Label(std::string text);
+    Label(std::string text, double diametr, Magnum::Vector3 coords);
 
-    void setFont(std::unique_ptr<Magnum::Text::AbstractFont>& font,
+    void setFont(std::shared_ptr<Magnum::Text::AbstractFont>& font,
                  Magnum::Text::DistanceFieldGlyphCache& cache);
     void draw(Magnum::Shaders::DistanceFieldVector3D& shader,
-              Magnum::Text::DistanceFieldGlyphCache& cache);
+              Magnum::Text::DistanceFieldGlyphCache& cache,
+              Magnum::Matrix4 global_state);
+
+    bool is_visible();
+
+    Label() = delete;
+    Label(const Label&) = delete;
+    Label operator = (const Label&) = delete;
+
 
 private:
+    double diametr;
     std::string text;
+    Magnum::Vector3 coords;
+    Magnum::Matrix4 state;
     Magnum::Mesh text_mesh;
     Magnum::Buffer vertices;
     Magnum::Buffer indices;
 
-    // Magnum::Matrix3 _transformation;
-    // Magnum::Matrix3 _projection;
 };
 
 

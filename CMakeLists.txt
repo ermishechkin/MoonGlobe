@@ -149,8 +149,8 @@ else()
     set(TARGET_GLES ON)
     set(BUILD_STATIC ON)
     set(BUILD_PLUGINS_STATIC ON)
-    set(BUILD_STATIC ON CACHE BOOL "" FORCE)
-    set(BUILD_PLUGINS_STATIC ON CACHE BOOL "" FORCE)
+    # set(BUILD_STATIC ON CACHE BOOL "" FORCE)
+    # set(BUILD_PLUGINS_STATIC ON CACHE BOOL "" FORCE)
 
 
     add_subdirectory(libs/freetype2)
@@ -204,7 +204,9 @@ else()
     corrade_add_resource(RES_LEVEL1 resources/level1.conf)
     corrade_add_resource(RES_LEVEL2 resources/level2.conf)
     corrade_add_resource(RES_LEVEL3 resources/level3.conf)
-    set(RESOURCES ${RES_LEVEL1} ${RES_LEVEL2}) # ${RES_LEVEL3})
+    corrade_add_resource(FONT resources/font.conf)
+    corrade_add_resource(FEATURES resources/features.conf)
+    set(RESOURCES ${FONT} ${RES_LEVEL1} ${RES_LEVEL2} ${FEATURES}) # ${RES_LEVEL3})
 
     #----------------------- sources ------------------------
     set(SOURCES
@@ -229,5 +231,4 @@ else()
 
     #----------------------- link libraries to target ------------------------
     target_link_libraries(${PROJECT_NAME} ${LIBS})
-    target_link_libraries(${PROJECT_NAME} ~/Dropbox/projects/OpenGL/MoonGlobe/build/libs/magnum-plugins/src/MagnumPlugins/JpegImporter/libJpegImporter.a)
 endif()

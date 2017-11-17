@@ -1,5 +1,14 @@
 #include "MeshGenerators.h"
 
+void normalize(Magnum::Vector3& v)
+{
+    float l = sqrt(v.x() * v.x() + v.y() * v.y() + v.z() * v.z());
+    v.x() /= l;
+    v.y() /= l;
+    v.z() /= l;
+}
+
+
 void print_coord(Coords& c)
 {
     std:: cout << c.x << " " << c.y << " " << c.z << "\n";

@@ -24,6 +24,7 @@
 #include <Magnum/Magnum.h>
 #include "Coords/Coords.h"
 
+void normalize(Magnum::Vector3& vector);
 
 void compute_decart_coord(Coords& coords);
 

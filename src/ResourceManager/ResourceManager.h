@@ -13,6 +13,9 @@
 #include <Magnum/Texture.h>
 #include <Magnum/Text/AbstractFont.h>
 #include <Magnum/Text/DistanceFieldGlyphCache.h>
+#include <MagnumPlugins/FreeTypeFont/FreeTypeFont.h>
+
+
 
 typedef std::string TextureId;
 class AAssetManager;
@@ -56,6 +59,7 @@ private:
 
     bool font_is_loaded;
     static std::shared_ptr<Magnum::Text::AbstractFont> font_importer;
+    Magnum::PluginManager::Manager<Magnum::Text::AbstractFont> font_plugin_manager;
 
     std::unordered_map<TextureId, std::string> id_to_filename;
     static std::shared_ptr<Magnum::Trade::AbstractImporter> importer;

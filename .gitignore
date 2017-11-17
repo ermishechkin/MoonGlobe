@@ -4,5 +4,6 @@ build
 bin
 *.gch
 *.save
-resources/*/
+resources/L*/
+resources/l*/
 temp

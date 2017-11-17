@@ -2,23 +2,22 @@
 #define LABEL_MANAGER_H
 
 #include <vector>
-
+#include <fstream>
 #include <Corrade/PluginManager/Manager.h>
-
+#include <ResourceManager/ResourceManager.h>
+// #include <MagnumPlugins/FreeTypeFont/FreeTypeFont.h>
 #include "Label/Label.h"
 
 class LabelManager
 {
 public:
     LabelManager();
-    void draw(Magnum::Matrix4& transform, Magnum::Matrix4& projection);
+    void draw(Magnum::Matrix4& transformation, Magnum::Matrix4& projection);
 
 private:
-    Magnum::PluginManager::Manager<Magnum::Text::AbstractFont> _manager;
-    std::unique_ptr<Text::AbstractFont> _font;
 
+    std::vector<std::shared_ptr<Label>> labels;
     Magnum::Text::DistanceFieldGlyphCache _cache;
-    std::unique_ptr<Text::Renderer2D> _text2;
     Magnum::Shaders::DistanceFieldVector3D _shader;
 
     // Magnum::Matrix4 _transformation;

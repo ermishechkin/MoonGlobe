@@ -19,16 +19,16 @@ void Fragment::generateMesh(Coords left_bottom, Coords left_top, Coords right_to
                                                 right_top,   right_bottom);
 
     vertex_buffer.setData(MeshTools::interleave(mesh_data.positions(0),
-                                                mesh_data.normals(0),
-                                                mesh_data.textureCoords2D(0)),
+                                                mesh_data.normals(0)),
+                                                // mesh_data.textureCoords2D(0)),
                           BufferUsage::StaticDraw);
 
     mesh.setPrimitive(Magnum::MeshPrimitive::Triangles)//mesh_data.primitive())
         .setCount(mesh_data.positions(0).size())
         .addVertexBuffer(vertex_buffer, 0,
                          Shaders::Phong::Position{},
-                         Shaders::Phong::Normal{},
-                         Shaders::Phong::TextureCoordinates{});
+                         Shaders::Phong::Normal{});//,
+                        //  Shaders::Phong::TextureCoordinates{});
 }
 
 void Fragment::loadTexture()
@@ -58,13 +58,6 @@ Magnum::Vector3 from_point_to_center(const Coords& point)
     return Vector3(-point.x, -point.y, -point.z);
 }
 
-void normalize(Magnum::Vector3& v)
-{
-    float l = sqrt(v.x() * v.x() + v.y() * v.y() + v.z() * v.z());
-    v.x() /= l;
-    v.y() /= l;
-    v.z() /= l;
-}
 
 bool isVisiblePoint(const Coords& coord, const Camera& camera)
 {

@@ -47,7 +47,12 @@ ResourceManagerDestroyer::~ResourceManagerDestroyer()
 
 ResourceManager& ResourceManager::instance()
 {
-    // std::cout << "kek" << std::endl;
+    if (manager == nullptr) {
+        // std::cout << "\ncreate ResourceManager\n";
+        manager = new ResourceManager();
+        destroyer.initialize(manager);
+    }
+
     if (importer == nullptr &&
         font_importer == nullptr)
     {
@@ -58,18 +63,15 @@ ResourceManager& ResourceManager::instance()
         }
         std::cout << "jpeg_importer_loaded\n" << std::endl;
 
-        Magnum::PluginManager::Manager<Magnum::Text::AbstractFont> font_plugin_manager;
-        font_importer = font_plugin_manager.loadAndInstantiate("FreeTypeFont");
+        // Magnum::PluginManager::Manager<Magnum::Text::AbstractFont> font_plugin_manager;
+        font_importer = manager->font_plugin_manager.loadAndInstantiate("FreeTypeFont");
         if (!font_importer)
             std::exit(1);
 
+        font_importer->initialize();
+        //Magnum::Text::FreeTypeFont::initialize();
         std::cout << "font_plugin_loaded\n" << std::endl;
 
-    }
-    if (manager == nullptr) {
-        // std::cout << "\ncreate ResourceManager\n";
-        manager = new ResourceManager();
-        destroyer.initialize(manager);
     }
     return *manager;
 }
@@ -130,16 +132,6 @@ std::shared_ptr<Magnum::Texture2D> ResourceManager::loadTexture(TextureId id)
     std::optional<Magnum::Trade::ImageData2D> image = importer->image2D(0);
     CORRADE_INTERNAL_ASSERT(image);
 
-    // вывод параметров картинки
-    // Magnum::Math::Vector2<size_t> v1;
-    // Magnum::Math::Vector2<size_t> v2;
-    // size_t size = 0;
-    // std::tie(v1, v2, size) = image->dataProperties();
-    //
-    // std::cout << "\n" << v1.x() << " " << v1.y();// << " " << v1.z();
-    // std::cout << "\n" << v2.x() << " " << v2.y();// << " " << v2.z();
-    // std::cout << "\n" << size;
-
     std::shared_ptr<Magnum::Texture2D> new_texture = std::make_shared<Magnum::Texture2D>();
 
     // configure texture
@@ -154,6 +146,7 @@ std::shared_ptr<Magnum::Texture2D> ResourceManager::loadTexture(TextureId id)
 
 void ResourceManager::fillGlyphCache(Magnum::Text::GlyphCache& cache)
 {
+    std::cout << "fillGlyphCache()\n";
     if (!font_is_loaded)
         loadFont();
 
@@ -161,6 +154,7 @@ void ResourceManager::fillGlyphCache(Magnum::Text::GlyphCache& cache)
         cache,
         "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:-+,.!°ěäЗдравстуймиγειασουτνκόμ "
     );
+    std::cout << "end fillGlyphCache()\n";
 }
 
 std::shared_ptr<Magnum::Text::AbstractFont> ResourceManager::getFont()
@@ -170,11 +164,15 @@ std::shared_ptr<Magnum::Text::AbstractFont> ResourceManager::getFont()
 
 void ResourceManager::loadFont()
 {
+    font_importer->initialize();
+    std::cout << "loadFont()\n";
     Magnum::Utility::Resource rs("fonts");
-    if(!font_importer->openSingleData(rs.getRaw("DejaVuSans.ttf"), 110.0f)) {
+    if(!font_importer->openSingleData(rs.getRaw("font2.otf"), 100.0f)) {
         std::cout << "\nCannot open font file\n";
         std::exit(1);
     }
+    font_is_loaded = true;
+    std::cout << "end loadFont()\n";
 }
 
 bool ResourceManager::freeTexture(TextureId id)
