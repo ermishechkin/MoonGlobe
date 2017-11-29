@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include <unordered_map>
+#include <Magnum/Renderer.h>
 #include "Fragment/Fragment.h"
 
 typedef size_t ZoomLevel;

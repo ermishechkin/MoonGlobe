@@ -1,6 +1,7 @@
 #include "MoonGlobe/MoonGlobe.h"
 #include "Utils/to_str.h"
 
+using namespace Magnum;
 
 MoonGlobe::MoonGlobe()
     : zoom_level(1)
@@ -12,6 +13,7 @@ MoonGlobe::MoonGlobe()
     row_and_columns.insert(std::make_pair(3, std::make_pair(10, 20)));
     refreshFragments();
 }
+
 
 void MoonGlobe::refreshFragments()
 {
@@ -51,10 +53,10 @@ void MoonGlobe::generateFragments()
             Coords l_t = {         i * theta_step,          j * phi_step};
             Coords r_t = {         i * theta_step, length + j * phi_step};
             Coords r_b = {height + i * theta_step, length + j * phi_step};
-            compute_decart_coord(l_b);
-            compute_decart_coord(l_t);
-            compute_decart_coord(r_t);
-            compute_decart_coord(r_b);
+            compute_decart_coord(l_b, 1);
+            compute_decart_coord(l_t, 1);
+            compute_decart_coord(r_t, 1);
+            compute_decart_coord(r_b, 1);
             // print_coord(l_b);
             std::string texture_id = get_texture_id(zoom_level, i, j);
             std::cout << "\n" << texture_id;
@@ -65,8 +67,18 @@ void MoonGlobe::generateFragments()
     std::cout << fragments.size();
 }
 
+
+
+void MoonGlobe::set_scale(int level)
+{
+    zoom_level = level;
+}
+
 void MoonGlobe::draw(MyShader& shader, const Camera& camera)
 {
+    //enable depthtest and faceculling
+    Magnum::Renderer::enable(Magnum::Renderer::Feature::DepthTest);
+    Magnum::Renderer::enable(Magnum::Renderer::Feature::FaceCulling);
     refreshFragments();
     for (auto& fragment: fragments) {
         if (fragment->isVisible(camera)) {
@@ -75,9 +87,6 @@ void MoonGlobe::draw(MyShader& shader, const Camera& camera)
             // fragment.erase()
         }
     }
-}
-
-void MoonGlobe::set_scale(int level)
-{
-    zoom_level = level;
+    Magnum::Renderer::disable(Magnum::Renderer::Feature::DepthTest);
+    Magnum::Renderer::disable(Magnum::Renderer::Feature::FaceCulling);
 }

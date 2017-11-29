@@ -19,6 +19,7 @@
 #include <Magnum/PixelFormat.h>
 #include <Magnum/Platform/Context.h>
 
+#include "LabelManager/LabelManager.h"
 #include "MoonGlobe/MoonGlobe.h"
 #include "Camera/Camera.h"
 
@@ -40,6 +41,7 @@ class MoonGlobeApplication {
     Magnum::Platform::Context context;
     Camera camera;
     MoonGlobe moon_globe;
+    LabelManager labels;
     Shaders::Phong shader;
 
     Matrix4 transformation, projection, scaling;
