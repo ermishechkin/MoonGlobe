@@ -26,7 +26,7 @@
 
 void normalize(Magnum::Vector3& vector);
 
-void compute_decart_coord(Coords& coords);
+void compute_decart_coord(Coords& coords, double radius);
 
 std::vector<Coords> generate_linear_mesh(int columns, Coords left_bottom, Coords left_top,
                                          Coords right_top,   Coords right_bottom);

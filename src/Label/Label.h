@@ -21,21 +21,25 @@ class Label
 public:
     Label(std::string text, double diametr, Magnum::Vector3 coords);
 
-    void setFont(std::shared_ptr<Magnum::Text::AbstractFont>& font,
-                 Magnum::Text::DistanceFieldGlyphCache& cache);
+    void set_font(float scale, std::shared_ptr<Magnum::Text::AbstractFont>& font,
+                  Magnum::Text::DistanceFieldGlyphCache& cache);
+    void set_font(std::shared_ptr<Magnum::Text::AbstractFont>& font,
+                  Magnum::Text::DistanceFieldGlyphCache& cache);
     void draw(Magnum::Shaders::DistanceFieldVector3D& shader,
               Magnum::Text::DistanceFieldGlyphCache& cache,
               Magnum::Matrix4 global_state);
 
     bool is_visible();
+    void set_scale(float scale);
 
     Label() = delete;
     Label(const Label&) = delete;
     Label operator = (const Label&) = delete;
 
-
 private:
+
     double diametr;
+    bool visible;
     std::string text;
     Magnum::Vector3 coords;
     Magnum::Matrix4 state;

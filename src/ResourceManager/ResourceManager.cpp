@@ -146,13 +146,18 @@ std::shared_ptr<Magnum::Texture2D> ResourceManager::loadTexture(TextureId id)
 
 void ResourceManager::fillGlyphCache(Magnum::Text::GlyphCache& cache)
 {
+    static bool filled = false;
+    if (filled)
+        return;
+
+    filled = true;
     std::cout << "fillGlyphCache()\n";
     if (!font_is_loaded)
         loadFont();
 
     font_importer->fillGlyphCache(
         cache,
-        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:-+,.!°ěäЗдравстуймиγειασουτνκόμ "
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
     );
     std::cout << "end fillGlyphCache()\n";
 }
@@ -167,7 +172,7 @@ void ResourceManager::loadFont()
     font_importer->initialize();
     std::cout << "loadFont()\n";
     Magnum::Utility::Resource rs("fonts");
-    if(!font_importer->openSingleData(rs.getRaw("font2.otf"), 100.0f)) {
+    if(!font_importer->openSingleData(rs.getRaw("font1.ttf"), 110.0f)) {
         std::cout << "\nCannot open font file\n";
         std::exit(1);
     }

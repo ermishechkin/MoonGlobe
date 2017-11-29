@@ -57,18 +57,18 @@ void print_vector(const std::vector<Coords>& v)
     }
 }
 
-// знаю координаты тета, фи и центр с радиусом заполняет декартовы координаты
-void compute_decart_coord(Coords& coords)
+// знаю координаты тета, фи и центр с радиусом, заполняет декартовы координаты
+void compute_decart_coord(Coords& coords, double radius)
 {
     // const static float center_x = 0;
     // const static float center_y = 0;
     // const static float center_z = 0;
     // float R = 1.0;
 
-    // 0, 0, 0, R = 1
-    coords.y = cos(coords.theta);
-    coords.x = sin(coords.theta)  * cos(coords.phi);
-    coords.z = sin(coords.theta) * sin(coords.phi);
+    // 0, 0, 0, R = r
+    coords.y = radius * cos(coords.theta);
+    coords.x = radius * sin(coords.theta) * cos(coords.phi);
+    coords.z = radius * sin(coords.theta) * sin(coords.phi);
 }
 
 Magnum::Vector2 compute_texture_coords(const Coords& point,   const Coords& left_bottom,
@@ -121,7 +121,7 @@ Magnum::Trade::MeshData3D generate_mesh(int rows, int columns,
     }
 
     for (Coords& coords: mesh_total) {
-        compute_decart_coord(coords);
+        compute_decart_coord(coords, 1);
     }
 
     // print_vector(mesh_total);

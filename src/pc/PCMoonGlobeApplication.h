@@ -32,6 +32,7 @@ class PCMoonGlobeApplication : public Platform::Application {
 
  private:
     void drawEvent() override;
+    void keyPressEvent(KeyEvent& event) override;
     void mousePressEvent(MouseEvent &event) override;
     void mouseReleaseEvent(MouseEvent &event) override;
     void mouseMoveEvent(MouseMoveEvent &event) override;
@@ -44,8 +45,9 @@ class PCMoonGlobeApplication : public Platform::Application {
     Shaders::Phong shader;
     Camera camera;
 
-    Matrix4 transformation, projection;
+    Matrix4 transformation, projection, scaling;
     Vector2i previousMousePosition;
+    float scale_k;
 };
 
 } // end of namespace

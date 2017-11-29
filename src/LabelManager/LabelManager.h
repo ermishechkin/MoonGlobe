@@ -12,7 +12,9 @@ class LabelManager
 {
 public:
     LabelManager();
-    void draw(Magnum::Matrix4& transformation, Magnum::Matrix4& projection);
+    void draw(const Magnum::Matrix4& transformation, const Magnum::Matrix4& projection);
+    void set_scale(float scale);
+
 
 private:
 
