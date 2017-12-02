@@ -7,13 +7,11 @@ static bool plugin_inited = false;
 
 MoonGlobeApplication::MoonGlobeApplication()
     : shader{Shaders::Phong::Flag::DiffuseTexture},
-      scaling(Matrix4::scaling({1.0, 1.0, 1.0})), scale_k(1), camera(0, 0, -CAMERA_BASE_DISTANCE)
+      scaling(Matrix4::scaling({1.0, 1.0, 1.0})), scale_k(1), prev_scale(1), font_need_update(true), camera(0, 0, -CAMERA_BASE_DISTANCE)
 {
     initProjectionMatrix();
     if (!plugin_inited) {
         plugin_inited = true;
-        CORRADE_PLUGIN_IMPORT(JpegImporter);
-        CORRADE_PLUGIN_IMPORT(FreeTypeFont);
     }
 }
 
@@ -22,8 +20,6 @@ void MoonGlobeApplication::initProjectionMatrix()
     // set transform matrix
     transformation = Matrix4::rotationX(30.0_degf) * Matrix4::rotationY(40.0_degf);
     // set perspective projection
-//    projection = Matrix4::orthographicProjection(
-//            Vector2{defaultFramebuffer.viewport().size()}, 0.01f, 100.0f) * Matrix4::translation(Vector3::zAxis(-10.0f));
     projection = Matrix4::perspectiveProjection(
         35.0_degf,
         Vector2{defaultFramebuffer.viewport().size()}.aspectRatio(), 0.01f, 100.0f)
@@ -45,12 +41,16 @@ void MoonGlobeApplication::drawEvent()
 {
     defaultFramebuffer.clear(FramebufferClear::Color | FramebufferClear::Depth);
 
+    if (font_need_update) {
+        labels.set_scale(scale_k, camera);
+        font_need_update = false;
+    }
 
     setShaderUniforms();
     // shader.setDiffuseColor(Color4::fromHSV(216.0_degf, 0.85f, 1.0f));
     moon_globe.draw(shader, camera);
     // там внутри свой шейдер, нужны матрицы состояний
-    labels.draw(translation * scaling, projection);
+    labels.draw(transformation * scaling, projection, camera);
 }
 
 void MoonGlobeApplication::rotateEvent(float dx, float dy)
@@ -63,23 +63,11 @@ void MoonGlobeApplication::rotateEvent(float dx, float dy)
                      transformation;
     Vector4 cam{0, 0, -CAMERA_BASE_DISTANCE, 1};
     cam = transformation.inverted() * cam;
+    cam = cam.normalized() * (CAMERA_BASE_DISTANCE - scale_k);
     camera.x = cam.x();
     camera.y = cam.y();
     camera.z = cam.z();
-}
-
-void MoonGlobeApplication::rotateEvent2(float x1, float y1, float x2, float y2)
-{
-    auto tmp = defaultFramebuffer.viewport().size();
-    Vector2 screen{(float)tmp.x(), (float)tmp.y()};
-    float alpha = atanf((0.5f - (x1/screen.x())) / 11.0f);
-    alpha -= atanf((0.5f - (x2/screen.x())) / 11.0f);
-    float beta = atanf((0.5f - (y1/screen.y())) / 11.0f);
-    beta -= atanf((0.5f - (y2/screen.y())) / 11.0f);
-
-    transformation = Matrix4::rotationX(Rad{beta/scale_k}) *
-                     transformation *
-                     Matrix4::rotationY(Rad{alpha/scale_k});
+    font_need_update = true;
 }
 
 void MoonGlobeApplication::zoomEvent(float scale)
@@ -89,11 +77,19 @@ void MoonGlobeApplication::zoomEvent(float scale)
     scale_k = scale_k < 0.5f ? 0.5f : scale_k;
 //    camera.scale(scale_k);
     scaling = Matrix4::scaling({scale_k, scale_k, scale_k});
+
+    Vector3d cam = Vector3d{camera.x, camera.y, camera.z};
+    cam = cam.normalized() * (CAMERA_BASE_DISTANCE-scale_k);
+    camera.x = cam.x(); camera.y = cam.y(); camera.z = cam.z();
+    int prev_level = moon_globe.get_scale(), new_level;
     if (scale_k > 4) {
-        moon_globe.set_scale(2);
+        new_level = 2;
     } else {
-        moon_globe.set_scale(1);
+        new_level = 1;
     }
-    
-    labels.set_scale(scale_k);
+    moon_globe.set_scale(new_level);
+    if (scale_k - prev_scale < -1 || scale_k - prev_scale > 1) {
+        font_need_update = true;
+        prev_scale = scale_k;
+    }
 }

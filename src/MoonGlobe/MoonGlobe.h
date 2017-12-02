@@ -15,6 +15,7 @@ public:
     MoonGlobe();
 
     void draw(MyShader& shader, const Camera& camera);
+    int get_scale();
     void set_scale(int level);
 
 private:

@@ -5,7 +5,7 @@
 
 using namespace Moonglobe;
 
-std::shared_ptr<Magnum::Text::AbstractFont> ResourceManager::font_importer;
+std::shared_ptr<Magnum::Text::FreeTypeFont> ResourceManager::font_importer;
 std::shared_ptr<Magnum::Trade::AbstractImporter> ResourceManager::importer;
 ResourceManager* ResourceManager::manager = nullptr;
 
@@ -13,7 +13,7 @@ ResourceManagerDestroyer ResourceManager::destroyer;
 AAssetManager *ResourceManager::assetManager = nullptr;
 
 ResourceManager::ResourceManager()
-    : font_is_loaded(false)
+    : font_is_loaded(false), filled(false)
 {
     // std::cout << "kek" << std::endl;
     fillHashTable(1, 2, 4);
@@ -40,11 +40,6 @@ void ResourceManager::fillHashTable(size_t zoom_level, size_t rows, size_t colum
     }
 }
 
-ResourceManagerDestroyer::~ResourceManagerDestroyer()
-{
-    delete instance;
-}
-
 ResourceManager& ResourceManager::instance()
 {
     if (manager == nullptr) {
@@ -63,8 +58,8 @@ ResourceManager& ResourceManager::instance()
         }
         std::cout << "jpeg_importer_loaded\n" << std::endl;
 
-        // Magnum::PluginManager::Manager<Magnum::Text::AbstractFont> font_plugin_manager;
-        font_importer = manager->font_plugin_manager.loadAndInstantiate("FreeTypeFont");
+        Magnum::PluginManager::Manager<Magnum::Text::FreeTypeFont> font_plugin_manager;
+        font_importer = font_plugin_manager.loadAndInstantiate("FreeTypeFont");
         if (!font_importer)
             std::exit(1);
 
@@ -146,7 +141,6 @@ std::shared_ptr<Magnum::Texture2D> ResourceManager::loadTexture(TextureId id)
 
 void ResourceManager::fillGlyphCache(Magnum::Text::GlyphCache& cache)
 {
-    static bool filled = false;
     if (filled)
         return;
 

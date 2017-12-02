@@ -67,7 +67,10 @@ void MoonGlobe::generateFragments()
     std::cout << fragments.size();
 }
 
-
+int MoonGlobe::get_scale()
+{
+    return zoom_level;
+}
 
 void MoonGlobe::set_scale(int level)
 {

@@ -18,10 +18,12 @@
 #include <Magnum/TextureFormat.h>
 #include <Magnum/PixelFormat.h>
 #include <Magnum/Platform/Context.h>
+#include <Magnum/Math/Math.h>
 
 #include "LabelManager/LabelManager.h"
 #include "MoonGlobe/MoonGlobe.h"
 #include "Camera/Camera.h"
+
 
 using namespace Magnum::Math::Literals;
 
@@ -46,6 +48,8 @@ class MoonGlobeApplication {
 
     Matrix4 transformation, projection, scaling;
     float scale_k;
+    bool font_need_update;
+    float prev_scale;
 };
 
 #endif

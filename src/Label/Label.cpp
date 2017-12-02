@@ -10,16 +10,54 @@ Label::Label(std::string text, double diametr, Magnum::Vector3 coords)
     , coords(coords)
     , text_mesh{Magnum::NoCreate}
     , visible(true)
+    , scale(-1)
 {}
+
+int Label::get_scale()
+{
+    return scale;
+}
 
 void Label::set_scale(float scale)
 {
+    this->scale = scale;
     visible = (diametr > 10 * (15 - scale * 15 / 8.5));
+}
+
+float distance(float x1, float y1, float z1, float x2, float y2, float z2)
+{
+    float dx = x1 - x2;
+    float dy = y1 - y2;
+    float dz = z1 - z2;
+    return (float)sqrt(dx*dx + dy*dy + dz*dz);
 }
 
 bool Label::is_visible()
 {
     return visible;
+}
+
+bool Label::on_camera(const Camera &c)
+{
+    Magnum::Vector3 from_camera_to_label =
+            Vector3(coords.x() - c.x, coords.y() - c.y, coords.z() - c.z);
+    Magnum::Vector3 from_camera_to_center = Vector3(-c.x, -c.y, -c.z);
+
+    from_camera_to_label= from_camera_to_label.normalized();
+    from_camera_to_center = from_camera_to_center.normalized();
+
+    Magnum::Math::Rad<float> angle = Magnum::Math::angle(from_camera_to_label, from_camera_to_center);
+    Magnum::Math::Deg<float> angle_deg = Magnum::Math::Deg<float>(angle);
+
+    auto l = coords;
+    if (angle_deg < 17.0_degf &&
+        distance(c.x, c.y, c.z, 0, 0, 0) < distance(c.x, c.y, c.z, l.x(), l.y(), l.z()))
+    {
+        return true;
+    } else {
+        return false;
+    }
+
     // всего 15 уровней диаметра, 10,20,30,...,150 км
     // scala_k от 1 до 9.5, поэтому 15/8.5
 }

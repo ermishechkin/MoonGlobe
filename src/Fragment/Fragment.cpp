@@ -19,16 +19,16 @@ void Fragment::generateMesh(Coords left_bottom, Coords left_top, Coords right_to
                                                 right_top,   right_bottom);
 
     vertex_buffer.setData(MeshTools::interleave(mesh_data.positions(0),
-                                                mesh_data.normals(0)),
-                                                // mesh_data.textureCoords2D(0)),
+                                                mesh_data.normals(0),
+                                                mesh_data.textureCoords2D(0)),
                           BufferUsage::StaticDraw);
 
     mesh.setPrimitive(Magnum::MeshPrimitive::Triangles)//mesh_data.primitive())
         .setCount(mesh_data.positions(0).size())
         .addVertexBuffer(vertex_buffer, 0,
                          Shaders::Phong::Position{},
-                         Shaders::Phong::Normal{});//,
-                        //  Shaders::Phong::TextureCoordinates{});
+                         Shaders::Phong::Normal{},
+                         Shaders::Phong::TextureCoordinates{});
 }
 
 void Fragment::loadTexture()

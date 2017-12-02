@@ -13,6 +13,7 @@
 #include <tuple>
 
 #include "Utils/MeshGenerators.h"
+#include "Camera/Camera.h"
 
 using namespace Magnum;
 
@@ -30,6 +31,8 @@ public:
               Magnum::Matrix4 global_state);
 
     bool is_visible();
+    bool on_camera(const Camera &camera);
+    int get_scale();
     void set_scale(float scale);
 
     Label() = delete;
@@ -46,6 +49,7 @@ private:
     Magnum::Mesh text_mesh;
     Magnum::Buffer vertices;
     Magnum::Buffer indices;
+    float scale;
 
 };
 
